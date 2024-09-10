@@ -23,10 +23,6 @@ namespace mwared2.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
         private readonly ILogger<WeatherForecastController> _logger;
 
         public WeatherForecastController(ILogger<WeatherForecastController> logger)
@@ -36,26 +32,24 @@ namespace mwared2.Controllers
 
         [HttpPost]
         [Route("/xml")]
+        //[Produces("application/xml")]
         public string PostXml([FromBody] XElement xml)
         {
-            string path = Environment.GetEnvironmentVariable("FILE_PATH") ?? @"C:\Work\2024\GAC\sampleResponse.xml";
+            var xmlElement = xml.Descendants("IM_BUKRS").FirstOrDefault()?.Value;
 
-            string readText = System.IO.File.ReadAllText(path);
+            if (xmlElement == null)
+            {
+                return "The 'IM_BUKRS' element is missing in the provided XML.";
+            }
+
+            string path = Environment.GetEnvironmentVariable("FILE_PATH") ?? @"C:\Work\2024\GAC\";
+            string fileName = path + xmlElement + ".xml";
+
+            string readText = System.IO.File.ReadAllText(fileName);
             Console.WriteLine(readText);
 
             return readText;
         }
 
-        [HttpGet(Name = "GetWeatherForecast")]
-        public IEnumerable<WeatherForecast> Get()
-        {
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-            {
-                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-                TemperatureC = Random.Shared.Next(-20, 55),
-                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-            })
-            .ToArray();
-        }
     }
 }
