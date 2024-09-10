@@ -39,7 +39,8 @@ namespace mwared2.Controllers
 
             if (xmlElement == null)
             {
-                return "The 'IM_BUKRS' element is missing in the provided XML.";
+                string returnValue = xml.Value; 
+                return returnValue;
             }
 
             string path = Environment.GetEnvironmentVariable("FILE_PATH") ?? @"C:\Work\2024\GAC\";
