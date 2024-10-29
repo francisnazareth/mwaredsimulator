@@ -35,9 +35,9 @@ namespace mwared2.Controllers
         //[Produces("application/xml")]
         public string PostXml([FromBody] XElement xml)
         {
-            //var xmlElement = xml.Descendants("IM_BUKRS").FirstOrDefault()?.Value;
+            //var xmlElement = xml.Descendants("IM_BUKRS").FirstOrDefault()?.Value; 
 
-            var xmlElement = xml.Value.Trim(); 
+            var xmlElement = xml.Value.Replace("sample", "").Trim();
 
             if (xmlElement == null)
             {
