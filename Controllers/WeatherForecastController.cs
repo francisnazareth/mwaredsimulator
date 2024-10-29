@@ -16,6 +16,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 using System.IO;
 using System.Text;
+using System.Net;
 
 namespace mwared2.Controllers
 {
@@ -32,27 +33,28 @@ namespace mwared2.Controllers
 
         [HttpPost]
         [Route("/xml")]
-        //[Produces("application/xml")]
-        public string PostXml([FromBody] XElement xml)
+        [Produces("text/xml")]
+        public ContentResult PostXml([FromBody] XElement xml)
         {
             //var xmlElement = xml.Descendants("IM_BUKRS").FirstOrDefault()?.Value; 
 
             var xmlElement = xml.Value.Replace("sample", "").Trim();
 
-            if (xmlElement == null)
-            {
-                string returnValue = xml.Value; 
-                return returnValue;
-            }
-
+       
             string path = Environment.GetEnvironmentVariable("FILE_PATH") ?? @"C:\Work\2024\GAC\";
             string fileName = path + xmlElement + ".xml";
 
             string readText = System.IO.File.ReadAllText(fileName);
             Console.WriteLine(readText);
 
-            return readText;
-        }
+            
+            return new ContentResult
+            {
+                Content = readText,
+                ContentType = "application/xml",
+                StatusCode = 200
+            };
 
+        }
     }
 }
